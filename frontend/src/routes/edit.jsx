@@ -1,34 +1,30 @@
-// Importing necessary components and hooks from react-router-dom and a local module
 import {
   Form,
   useLoaderData,
   redirect,
   useNavigate,
-} from "react-router-dom";
-import axios from 'axios';
+  } from "react-router-dom";
 import { updateContact } from "../contacts";
+import axios from "axios";
+import qs from "qs";
+
 
 export async function action({ request, params }) {
-  const formData = await request.formData();
+ const formData = await request.formData();
+ const firstName = formData.get("first");
+ const lastName = formData.get("last");
+ const updates = Object.fromEntries(formData);
+ updates.first;
+ updates.last;
 
-  try {
-    // Assuming updateContact is an API call to update the contact on the backend
-    // Adjust this code to match how your actual updateContact function is implemented
-    await updateContact(params.contactId, Object.fromEntries(formData));
-
-    // If the above function is not an API call and you wish to make a separate Axios call:
-    // await axios.post("http://localhost:3000/api/contact", formData, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data',
-    //   },
-    // });
-
-    return redirect(`/contacts/${params.contactId}`);
-  } catch (error) {
-    // Handle errors here, e.g. by logging them or displaying a message to the user
-    console.error('Failed to update contact', error);
-    // Consider how you want to handle the error, e.g. redirect to an error page or show a message
-  }
+ const data = qs.stringify(updates);
+ await axios
+   .post("http://localhost:3000/api/contact", data)
+   .then (response => {
+     console.log(response);
+   })
+ await updateContact(params.contactId, updates);
+ return redirect(`/contacts/${params.contactId}`);
 }
 
 // Component for editing a contact

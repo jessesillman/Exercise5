@@ -1,34 +1,31 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import contactRouters from './routes/contactRoutes.js'; // Ensure the path is correct
+import contactRouter from './routes/contactRoutes.js';  // Adjust the path if necessary
 
-// Create an instance of express
 const app = express();
 
-// Use CORS middleware
-app.use(cors());
+// Middleware setup
+app.use(cors()); // Enables CORS
+app.use(express.json()); // Parses incoming JSON requests
 
-// Middleware to parse JSON
-app.use(express.json());
-
-// Define a route for GET requests to the root URL ('/')
+// Root endpoint
 app.get('/', (req, res) => {
     res.send('Welcome to my API!');
 });
 
-// Use the contactRoutes and prefix them with '/api'
-app.use('/api', contactRouters);
+// API routes
+app.use('/api', contactRouter);
 
-// Define the port to run the server on
+// Server port
 const PORT = 3000;
 
-// MongoDB connection
+// MongoDB connection without the deprecated options
 mongoose.connect('mongodb://localhost:27017/Exercise5')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Error connecting to MongoDB:', err));
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('Error connecting to MongoDB:', err));
 
-// Start the server on the defined PORT
+// Starting the server
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
